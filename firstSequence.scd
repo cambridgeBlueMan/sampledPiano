@@ -2,6 +2,7 @@
 var moveOn = false;
 ~storedNoteVals = List.new(0);
 x = TempoClock.new;
+	z = Pseq([1,1,1,1,1,1,1,1,1,2], inf).asStream;
 x.sched(0, {
 	var num, val;
 	if (moveOn == true, {
@@ -20,7 +21,14 @@ x.sched(0, {
 			});
 	});
 	~doANote.value(num, val);
-	1
+	// attempt to define a key centre
+	if (moveOn == true, {
+		if (0.5.coin , {
+		~doANote.value([48, 60, 72, 55, 67, 53, 65].choose, val)
+		});
+	});
+	// add a pause on 10
+	z.next.postn("the delta")
 });
 
 )
