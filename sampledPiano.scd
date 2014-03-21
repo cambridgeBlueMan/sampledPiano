@@ -1,4 +1,16 @@
+
+
 (
+m = MixerChannel.new("master", s, 2, 2);
+a = MixerChannel.new("reverb", s,2,2);
+a.play(Instr.at([\busfx, \rvb_allpass2]));
+b = MixingBoard.new("Raindirk", mixers: [m,a]);
+//b.add([m, a])
+)
+s.makeGui
+MixerChannel.freeAll
+(
+
 // *********************************************************************************************
 //                    LOAD THE SAMPLES
 // *********************************************************************************************
@@ -38,14 +50,14 @@ s.waitForBoot({
 // clear all buffers on cmd period
 
 CmdPeriod.add({
-	Buffer.freeAll
-});
+ 	Buffer.freeAll
+})
 
 ) // END CODE
 
 (
 SynthDef(\sampledPiano, {|bufnum=5, powerNumerator= 1, gate=1, outbus= 0, amp = 0.5|
-	var sig = PlayBuf.ar(2, bufnum: bufnum, rate: 2.pow(powerNumerator/12));
+	var sig = PlayBuf.ar(2, bufnum: bufnum, rate: 2.pow(powerNumerator/12), doneAction: 2);
 	var env = EnvGen.ar(Env.cutoff(0.1, amp), gate: gate, doneAction: 2);
 	Out.ar(outbus, sig*env)
 }).add
@@ -90,6 +102,8 @@ on = MIDIFunc.noteOn({|val, num, chan, src|
 
 	// *************************************
 	// then make the synth and pass the args
+
+	//notes[num] = Synth.new(\sampledPiano,
 	notes[num] = Synth.new(\sampledPiano,
 		[ \powerNumerator, sampleInfo[1],
 			\bufnum, theSample,
