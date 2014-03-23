@@ -1,40 +1,96 @@
 (
-var moveOn = false;
-~storedNoteVals = List.new(0);
-x = TempoClock.new;
-	z = Pseq([1,1,1,1,1,1,1,1,1,2], inf).asStream;
-x.sched(0, {
+var sectionB = false;
+var aClock; // on which to run the main scheduler
+var deltas; // a stream of deltas
+var melodyNotes; // an array of notes from which the melody will be derived
+var pMelodyNotes; // the pattern used to generate melody notes from the melodyNotes array
+var savedMelody; // a List to hold randomly generated notes for recall later
+var pSavedMelody; // a pattern with savedMelody as its list
+var playNote; // afunction to process a note prior to sending to synth
+var harmonyNotes; // an array of notes from which to derive the harmon notes
+var pHarmonyNotes; // a pattern to generate the harmony notes
+var element; //a temp variable so we
+var counter = 0;
+var withHarmony = false;
+
+// initialise saved melody
+savedMelody = List.new(0);
+
+
+// build  pMelodyNotes
+melodyNotes = Array.series(32, 40, 1);
+pMelodyNotes = Prand(melodyNotes, inf);
+
+// build pHarmonyNotes
+harmonyNotes = [48, 60, 72, 55, 67, 53, 65];
+pHarmonyNotes = Prand(harmonyNotes, inf).asStream;
+
+
+aClock = TempoClock.new;
+
+deltas = Pseq([1,1,1,1,1,1, 2], inf).asStream;
+
+aClock.sched(0, {
 	var num, val;
-	if (moveOn == true, {
-		"in if".postln;
-		y = x.next;
-		num = y[0].postln; val = y.next[1];
-		},
+	// get velocity outside conditional stuff, cos it is always needed
+	val =  rrand(20, 127);
+
+	// ******************************************************************
+	//                           SECTION A
+	// ******************************************************************
+	if (sectionB == false,
 		{
-			"in else".postln;
-			num  = Prand(Array.series(32, 40, 1), inf).asStream.next; // (rrand(48,72); // get some note
-			val =  rrand(20, 127); // get some velocity
-			~storedNoteVals.add([num, val]);
-			if (~storedNoteVals.size.postln ==10,
+			// ****************************
+			// initially get values randomly
+			num  = pMelodyNotes.asStream.next;
+
+			// **********************************************************
+			// and store these random values in an array to be used later
+			savedMelody.add([num, val]);
+			if (savedMelody.size ==7,
 				{
-					moveOn = true;x = Pseq(~storedNoteVals.asArray, 4).asStream
+					sectionB = true;
+					pSavedMelody = Pseq(savedMelody, 3).asStream;
+					withHarmony = true;
 			});
-	});
-	~doANote.value(num, val);
-	// attempt to define a key centre
-	if (moveOn == true, {
-		if (0.5.coin , {
-		~doANote.value([48, 60, 72, 55, 67, 53, 65].choose, val)
-		});
-	});
-	// add a pause on 10
-	z.next.postn("the delta")
+		},
+
+		// ******************************************************************
+		//                           SECTION B
+		// ******************************************************************
+		{
+			if (withHarmony == true, {
+
+				// then put out a note
+				if (0.5.coin == true , {
+					playNote.value(pHarmonyNotes.next, val)
+				});
+			});
+
+			// now prepare a note to output from the savedMelody array
+			element = pSavedMelody.next;
+			num = element[0];
+			val = element[1];
+
+			// increment the counter
+			counter = counter + 1;
+
+			// at end of savedMelody array then switch the harmony flag
+			if (counter.mod(7) == 0,
+				{
+					if (withHarmony == true, {withHarmony = false} , {withHarmony = true});
+				},
+				{
+			});
+		}
+	);
+
+	playNote.value(num, val);
+	deltas.next;
 });
 
-)
+playNote = {|num, val|
 
-(
-~doANote = {|num, val|
 	var pedalStatus = "V"; // pseudo pedal control, set lower case for pedal
 	var notes, on, off;
 	var veloc;
@@ -42,6 +98,7 @@ x.sched(0, {
 	var theSample;
 	var powerNumerator=0;
 	var sampleInfo;
+	// m.noteOn(0,num, val);
 	notes = Array.newClear(128);
 
 	// *****************************************************************
@@ -80,7 +137,7 @@ x.sched(0, {
 }
 )
 
-~storedNoteVals
+melody
 s.makeGui
 s.freeAll
 
