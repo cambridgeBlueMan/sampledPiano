@@ -6,7 +6,7 @@ var athloneHighlanders;
 
 // ****************************************************************
 // rhythmic feels expressed as ratios, hence we need a rhthmic unit
-var rhythmicUnit = 0.3;
+var rhythmicUnit = 0.2;
 
 // ***************************************
 // scale from which to derive the melodies
