@@ -12,9 +12,7 @@ var rhythmicUnit = 0.2;
 // scale from which to derive the melodies
 var gMajor = [67, 69, 71, 72, 74, 76, 78, 79];
 
-// ***************
-// make a midi out
-var mOut = MIDIOut.newByName("IAC Driver", "Bus 1").latency_(Server.default.latency);
+
 
 // **********************************
 // rhythmic feels expressed as arrays
