@@ -45,10 +45,31 @@ var rightNotesBar5 = Pseq([64, 59, 67, 59, 64, 59, 67, 59, 71, 59, 67, 59, 64, 5
 var rightDursBar5 = Pseq([0.5], 16);
 var leftHand1, rightHand1, sustain;
 
-var leftHand2 = Pbind([
+/*
+ var leftHand2 = Pbind(
+ 	//\pan, -1,
+ 	\type, \midi,
+ 	\midicmd, \noteOn,
+ 	\midiout, ~mOut,
+ 	\chan, 0,
+ 	\midinote, Pseq([
+ 		50, 62, 62, 48, 60, 60, 43, 41,
+ 		48,60,60,47,59,59, 41, 43
+ 	], inf),
+ 	\dur  , Pseq([2,1,1,2,1,1,4,4], inf)
+ ).play(TempoClock(2));
 
 
-]);
+ var dMin1Right1 = Pbind(
+ 	//\pan, -1,
+ 	\type, \midi,
+ 	\midicmd, \noteOn,
+ 	\midiout, ~mOut,
+ 	\chan, 0,
+ 	\midinote, Prand([Rest, 67, 65, 62, 65, 64, 60, 64, 62, 55, 57, 60], inf),
+ 	\dur  , Pseq([Pseq([0.5], 8), Pseq([1], 4)], inf)
+ ).play(TempoClock(2));
+*/
 
 leftHand1 = Pbind(
 	//\pan, -1,
