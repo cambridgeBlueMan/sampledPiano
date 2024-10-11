@@ -1,3 +1,5 @@
+
+
 (
 var lick1, lick2, lick3, lick4, lick5, lick6, lick7;
 var feel1, feel2, feel3, feel4;
@@ -12,6 +14,7 @@ var rhythmicUnit = 0.2;
 // scale from which to derive the melodies
 var gMajor = [67, 69, 71, 72, 74, 76, 78, 79];
 
+var mOut = MIDIOut.newByName("IAC Driver", "Bus 1").latency_(Server.default.latency);
 
 
 // **********************************

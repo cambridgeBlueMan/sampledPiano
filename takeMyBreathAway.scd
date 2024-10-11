@@ -1,3 +1,12 @@
+MIDIClient.init
+
+// ***************
+// make a midi out
+(
+~mOut = MIDIOut.newByName("IAC Driver", "Bus 1").latency_(Server.default.latency);
+)
+
+
 (
 // "take my breath away"
 
